@@ -329,6 +329,7 @@ function calculateEuler(){
 }
 function calibrateIMU(){
 	n = 1;
+	R_cal = matrix([[0,0,0], [0,0,0], [0,0,0]])
 	const limitedInterval = setInterval(() => {
 		if (n > 5){
 			R_cal = matrix.multiplyScalar(R_cal, (1/(n-1)) )
