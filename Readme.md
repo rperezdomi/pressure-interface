@@ -1,6 +1,5 @@
-# SWalker Robotic Platform's Interface Set-Up
+# Pressure Sensor's Interface Set-Up
 
-In this repository it has been developed the current User Interface of the SWalker Robotic Platform, a rehabilitation robotic system for elderly patients suffering from hip fracture. 
 For its setting up a Raspberry Pi is needed, together with a SD card. In our case, the interface has been developed using a Raspberry Pi 4 Model B and a SD card of 32 GB.
 
 **1º - OS Installation:** Install in your SD Card the Operating System for your Raspberry Pi 4 Model B. You will need a SD card, and its corresponding lector, where the OS will be installed. Then, the raspberry pi imager software must be installed in a PC, from which the corresponding OS will be written into the SD card. 
@@ -29,9 +28,12 @@ We recommend you to follow the instruction in the official documentation web of 
 		
 **4º - Interface automatic launch**: Configure the interface to be launched automatically at RPi boot. Thus, the interface will be accessible as long as the Raspberry is connected. In case of an interface error occurs, plug-off and plug-in again the RPi should solve it.
 * **Open** /etc/rc.local:
+
 		$ sudo nano /etc/rc.local
+		
 * At the end of the file **add** the following:
-		sudo node /your /path/pressure-interface/index.js &
+
+		sudo node /your_path/pressure-interface/index.js &
 
 **5º - Wireless Access Point**: Configure the raspberry pi as WiFi access point to access the interface from other device’s browsers. We recommend you to follow the raspberry pi official documentation [Setting up a Raspberry Pi as a routed wireless access point](https://www.raspberrypi.com/documentation/computers/configuration.html) in case you are using a Raspberry Pi 4, or [this link](https://pimylifeup.com/raspberry-pi-wireless-access-point/comment-page-1/), in case of Raspberry Pi 3 model.  
 
