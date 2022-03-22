@@ -1,4 +1,4 @@
-# SWalker Robotic Platform's Interface Set-up
+# SWalker Robotic Platform's Interface Set-Up
 
 In this repository it has been developed the current User Interface of the SWalker Robotic Platform, a rehabilitation robotic system for elderly patients suffering from hip fracture. 
 For its setting up a Raspberry Pi is needed, together with a SD card. In our case, the interface has been developed using a Raspberry Pi 4 Model B and a SD card of 32 GB.
