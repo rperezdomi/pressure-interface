@@ -16,13 +16,13 @@ window.onload = function(){
 	//*********************************//
 	var ctxalfa = document.getElementById('alfa_chart').getContext('2d');
 	var ctxbeta = document.getElementById('beta_chart').getContext('2d');
-	//var ctxgamma = document.getElementById('gamma_chart').getContext('2d');
+	var ctxgamma = document.getElementById('gamma_chart').getContext('2d');
 	var ctxpressure = document.getElementById('pressure_chart').getContext('2d');
 
 	// charts sizes:
 	ctxalfa.canvas.height = 340;
 	ctxbeta.canvas.height = 340;
-	//ctxgamma.canvas.height = 340;
+	ctxgamma.canvas.height = 340;
 	ctxpressure.canvas.height = 340;
 
 	var commonOptions = {
@@ -113,8 +113,8 @@ window.onload = function(){
 			yAxes: [{
 				ticks: {
                     //display: false,
-					max: 10,    // maximum will be 70, unless there is a lower value.
-					min: -10    // minimum will be -10, unless there is a lower value.  
+					max: 50,    // maximum will be 70, unless there is a lower value.
+					min: -50    // minimum will be -10, unless there is a lower value.  
 				},
 				scaleLabel: {
 					display: true,
@@ -168,7 +168,7 @@ window.onload = function(){
 		},
 		options: Object.assign({}, commonOptions_IMU)		
 	});
-	/*var gamma_chart_instance = new Chart(ctxgamma, {
+	var gamma_chart_instance = new Chart(ctxgamma, {
 		type: 'line',
 		data: {
 			datasets: [{label: 'gamma',
@@ -181,8 +181,8 @@ window.onload = function(){
 				pointStyle: 'line'
 			}]
 		},
-		options: Object.assign({}, commonOptions)		
-	});*/
+		options: Object.assign({}, commonOptions_IMU)		
+	});
 	var pressure_chart_instance = new Chart(ctxpressure, {
 		type: 'line',
 		data: {
@@ -210,6 +210,7 @@ window.onload = function(){
 			document.getElementById("connect_imu").style.background = "#808080";
 			document.getElementById("connect_imu").innerHTML = "Conectando...";
 			socket.emit('pressure:connect_imu1');
+			console.log("connnect")
 
 		// Stop emg_connection
 		} else if (document.getElementById("connect_imu").value == "on") {
@@ -298,6 +299,7 @@ window.onload = function(){
 					n++
 					
 				}, 1000)
+				resetGraphs();
 
 				if(is_pressure_connected){
 					document.getElementById("record").disabled = false;
@@ -358,41 +360,46 @@ window.onload = function(){
 		gamma = data.gamma;
 		pressure = data.pressure;
 		
+		
 		// Update data label
 		let segundos = Math.trunc(update_counter/10);
 		let milisegundos = (update_counter/10*1000 - segundos*1000)
 		let minutos = Math.trunc(segundos/60);
 		segundos = segundos - minutos*60; 
 		let label = minutos + '-' + segundos + '-' + milisegundos;
+		if(milisegundos.toString().length == 2){
+			label = minutos + '-' + segundos + '-0' + milisegundos;
+		}		
 		
 		if(is_imu_connected){
 			
 			//Update data value
 			alfa_chart_instance.data.datasets[0].data.push(alfa);
 			beta_chart_instance.data.datasets[0].data.push(beta);
-			//gamma_chart_instance.data.datasets[0].data.push(gamma);
+			gamma_chart_instance.data.datasets[0].data.push(gamma);
 			
 			alfa_chart_instance.data.labels.push(label);
 			beta_chart_instance.data.labels.push(label);
-			//gamma_chart_instance.data.labels.push(label);
+			gamma_chart_instance.data.labels.push(label);
 			
-			if(update_counter > 99){
+			if(update_counter > 49){
 				// Remove first data value  in array
 				alfa_chart_instance.data.datasets[0].data.shift()
 				beta_chart_instance.data.datasets[0].data.shift();
-				//gamma_chart_instance.data.datasets[0].data.shift();
+				gamma_chart_instance.data.datasets[0].data.shift();
 				
 				// Remove first data label in array
 				alfa_chart_instance.data.labels.shift()
 				beta_chart_instance.data.labels.shift();
-				//gamma_chart_instance.data.labels.shift();
+				gamma_chart_instance.data.labels.shift();
 			}
 			
 		} else {
 			alfa_chart_instance.data.labels = ['00:00', '10:00'];
 			beta_chart_instance.data.labels = ['00:00', '10:00'];
-			//gamma_chart_instance.data.labels = ['00:00', '10:00'];
+			gamma_chart_instance.data.labels = ['00:00', '10:00'];
 		}
+		
 		
 		if(is_pressure_connected){
 			// Add data value in dataset list
@@ -401,7 +408,7 @@ window.onload = function(){
 			// Add label to chart
 			pressure_chart_instance.data.labels.push(label);
 			
-			if(update_counter > 99){
+			if(update_counter > 49){
 				// Remove first data valuein dataset list
 				pressure_chart_instance.data.datasets[0].data.shift();
 			
@@ -417,8 +424,10 @@ window.onload = function(){
 		
 		alfa_chart_instance.update();
 		beta_chart_instance.update();
-		//gamma_chart_instance.update();
+		gamma_chart_instance.update();
 		pressure_chart_instance.update();
+		
+		
 
 	});
 	
@@ -428,11 +437,11 @@ window.onload = function(){
 		if(is_imu_connected){
 			alfa_chart_instance.data.datasets[0].data = [];
 			beta_chart_instance.data.datasets[0].data = [];
-			//gamma_chart_instance.data.datasets[0].data = [];
+			gamma_chart_instance.data.datasets[0].data = [];
 			// show data
 			alfa_chart_instance.data.datasets[0].hidden = false;
 			beta_chart_instance.data.datasets[0].hidden = false;
-			//gamma_chart_instance.data.datasets[0].hidden = false;
+			gamma_chart_instance.data.datasets[0].hidden = false;
 		}
 		if(is_pressure_connected){
 			pressure_chart_instance.data.datasets[0].data = [];
@@ -445,7 +454,7 @@ window.onload = function(){
 	function hideIMUDatasets(){
 		alfa_chart_instance.data.datasets[0].hidden = true;
 		beta_chart_instance.data.datasets[0].hidden = true;
-		//gamma_chart_instance.data.datasets[0].hidden = true;
+		gamma_chart_instance.data.datasets[0].hidden = true;
 	}
 	
 	function hidePressureDatasets(){
