@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bluetooth-classic-serialport-client": "^0.1.25",
+    "bluetooth-serial-port": "^2.2.7",
     "chart.js": "^2.9.4",
     "exceljs": "^4.2.0",
     "express": "^4.17.1",
