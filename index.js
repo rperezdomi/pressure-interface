@@ -11,7 +11,7 @@ const matrix = require('node-matrix');
 const BluetoothClassicSerialportClient = require('bluetooth-classic-serialport-client');
 const serial_imu1 = new BluetoothClassicSerialportClient();
 const serial_pressure = new BluetoothClassicSerialportClient();
-const PLOTSAMPLINGTIME = 100; //ms
+const PLOTSAMPLINGTIME = 200; //ms
 const pressureSensorName = "HC-06";
 
 /////////////////////////////////
@@ -39,8 +39,6 @@ const server = app.listen(app.get('port'), () => {
 const io = SocketIO(server);
 var sockets = Object.create(null);
 
-
-
 //////////////////////////////////////
 //***** SENSORS DATA RECEPTION
 //////////////////////////////
@@ -54,9 +52,9 @@ var is_pressure_connected = false;
 
 // vars used for the imus data reception
 var ascii_msg_imu1;
-var alfa; 
-var beta;
-var gamma;
+var alfa = 0; 
+var beta = 0;
+var gamma = 0;
 var alfa_vector = []
 var beta_vector =  []
 var gamma_vector = []
@@ -90,6 +88,7 @@ var pressure_value = 0;
 var lasthex_imu1 = "";
 var dcm_msgData = "";
 var dcm_mode = false;
+
 // IMU1 data reception (bt)
 serial_imu1.on('data', function(data){ 
 	// Check imu mode (DCM or ANGLES)
@@ -101,8 +100,7 @@ serial_imu1.on('data', function(data){
 			dcm_mode = false;
 		}  
 	}
-	
-		
+
 	// In Games mode the DCM matrix is needed. 
 	if (!dcm_mode){
 		
@@ -116,7 +114,7 @@ serial_imu1.on('data', function(data){
 	
 	// The imu streamming mode is already in DCM
 	} else{
-		
+		try{
 		// get the entire message from the received data ('#DCM= arg1, arg2...., arg10')
 		 ascii_msg_imu1 = hex2a_general(data, lasthex_imu1, is_first_data[1]);
 		 let msg_list = ascii_msg_imu1[0];
@@ -134,6 +132,7 @@ serial_imu1.on('data', function(data){
 					           ]);
 					
 					calculateEuler();
+					//console.log('#=DCM=' + dcm_data_vector)
 
 				} else {
 					lasthex_imu1 = '#' + msg_list[i]
@@ -143,7 +142,10 @@ serial_imu1.on('data', function(data){
 			}
 				
 		}
-	}	
+		}catch(error){
+			console.log(error);
+		}
+	}
 
 }); 
 
@@ -159,6 +161,16 @@ serial_imu1.on('closed', function(){
 
 })
 
+serial_imu1.on('failure', function(e){
+	console.log(e);
+
+})
+
+serial_imu1.on('disconnected', function(e){
+	console.log(e);
+
+})
+
 
 var data_pressure;
 var lasthex_pressure = "";
@@ -168,16 +180,16 @@ serial_pressure.on('data', function(data){
 	 let msg_list_pressure = ascii_msg_pressure[0];
 	 is_first_data[2] = ascii_msg_pressure[1];
 	 
+	 
 	 for(i=0; i < msg_list_pressure.length; i++){
 		if(msg_list_pressure[i].includes("=") & msg_list_pressure[i].includes(",")){
 			let data_vector = msg_list_pressure[i].split('=')[1].split(',');
 			if(data_vector.length == 2){
 				lasthex_pressure = "";
-				//console.log('#P=' + data_vector[0]);
 				pressure_value = data_vector[0]
 				if(record_therapy){
 					if(is_imu1_connected){
-						row_values.push([alfa, beta/*, gamma*/, pressure_value])			
+						row_values.push([alfa, beta, gamma, pressure_value])			
 					}
 				}
 			} else {
@@ -210,9 +222,11 @@ io.on('connection', (socket) => {
     app.get('/downloadpressuresensor', (req, res) => setTimeout(function(){ res.download('./PressureSensor.xlsx'); }, 1000))
 
     // Send data to the charts in pressure_home
+    
     setInterval(function () {
-		
+	
         socket.emit('pressure:data', {
+		
             // IMU
             alfa: alfa ,
             beta: beta,
@@ -221,12 +235,14 @@ io.on('connection', (socket) => {
             pressure: pressure_value,
             
         })
+
     }, PLOTSAMPLINGTIME);
 
     
     // Connect IMU 
     socket.on('pressure:connect_imu1', function(callbackFn) {
-		console.log(is_imu1_connected);
+	    
+	console.log(is_imu1_connected);
         connect_bt_device(socket, serial_imu1, is_imu1_connected, "imu1");
 
     });
@@ -263,17 +279,17 @@ io.on('connection', (socket) => {
        
         // IMU vars
         alfa = 0;
-		beta = 0;
-		gamma = 0;
-		alfa_vector = [];
-		beta_vector = [];
-		gamma_vector = [];
-		
-		// Pressure vars
-		pressure_value = 0;
-		
-		// To Excell
-		row_values = [];
+	beta = 0;
+	gamma = 0;
+	alfa_vector = [];
+	beta_vector = [];
+	gamma_vector = [];
+	
+	// Pressure vars
+	pressure_value = 0;
+	
+	// To Excell
+	row_values = [];
 		
     });
 
@@ -289,7 +305,7 @@ io.on('connection', (socket) => {
     	const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('data');
         
-        worksheet.addRow(["Alfa", "Beta", "Sensor Presión"]);
+        worksheet.addRow(["Alfa", "Beta", "Gamma", "Sensor Presión"]);
         for (var i = 0; i < row_values.length; i++) {
 			worksheet.addRow((row_values[i]));
 		}
@@ -300,46 +316,48 @@ io.on('connection', (socket) => {
     
     // calibrate Capture Motion sensor.
     socket.on('pressure:calibrate', function(callbackFn) {
-		
+
 		calibrateIMU();
+		console.log("calibrando");
 		
     });
 });
 
 function calculateEuler(){
 	if(!dcm_mode){
-		alfa = beta = gamma = 0;
-		return
-	}
-	
-	
-	RT = matrix.multiplyElements(RS, R_cal)
-	
-	try{
-		// CONVENIO ROTACIÓN + FLEXOEXTENSION
-		alfa = Math.asin(RT[1][0])*180 / Math.PI;
-		beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
+		alfa = 0
+		beta = 0
 		gamma = 0;
-				
-	} catch (e){
-		console.log("Alfa, beta, gamma calcs, error: " + e);
+	} 
+	if(dcm_mode){
+		RT = matrix.multiplyElements(RS, R_cal)
+		//console.log(alfa + "," + beta + "," + gamma)
+		
+		try{
+			// CERVICAL Inclin + flexExt
+			//alfa = Math.atan2(RT[0][2], RT[0][0]) * 180 / Math.PI;
+			//beta = Math.asin(RT[0][1]) * 180 / Math.PI;
+			//gamma = Math.atan2(-RT[2][1], RT[1][1]) * 180 / Math.PI;
+			// CONVENIO pronosupinacion + FLEXOEXTENSION
+			//alfa = Math.atan2(-RT[1][2], RT[1][1])*180 / Math.PI;
+			//beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
+			//gamma = 0;
+			// CONVENIO desviacion radial y cubital + FLEXOEXTENSION
+			alfa = Math.asin(-RT[1][0])*180 / Math.PI;
+			beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
+			gamma = 0;
+					
+		} catch (e){
+			console.log("Alfa, beta, gamma calcs, error: " + e);
+		}
 	}
 
 	
 }
 function calibrateIMU(){
 	n = 1;
-	R_cal = matrix([[0,0,0], [0,0,0], [0,0,0]])
-	const limitedInterval = setInterval(() => {
-		if (n > 5){
-			R_cal = matrix.multiplyScalar(R_cal, (1/(n-1)) )
-			R_cal = R_cal.transpose()
-			clearInterval(limitedInterval);
-		} else {
-			R_cal = matrix.add(RS, R_cal)
-			n++
-		} 
-	}, 20);
+	R_cal = RS
+	R_cal = R_cal.transpose()
 }
 
 function hex2a_general(hexx, lasthex, is_first_data) {
