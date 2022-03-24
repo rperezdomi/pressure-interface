@@ -103,7 +103,6 @@ serial_imu1.on('data', function(data){
 
 	// In Games mode the DCM matrix is needed. 
 	if (!dcm_mode){
-		
 		// To change the imu streaming mode to DCM, the command "#om" must be sent
 		var buf = Buffer.from('#om', 'utf8');
 		serial_imu1.write(buf)
@@ -132,7 +131,8 @@ serial_imu1.on('data', function(data){
 					           ]);
 					
 					calculateEuler();
-					//console.log('#=DCM=' + dcm_data_vector)
+					//console.log(alfa, ',', beta)
+					//console.log('#DCM=' + dcm_data_vector)
 
 				} else {
 					lasthex_imu1 = '#' + msg_list[i]
@@ -224,7 +224,6 @@ io.on('connection', (socket) => {
     // Send data to the charts in pressure_home
     
     setInterval(function () {
-	
         socket.emit('pressure:data', {
 		
             // IMU
@@ -307,9 +306,9 @@ io.on('connection', (socket) => {
         
         worksheet.addRow(["Alfa", "Beta", "Gamma", "Sensor Presión"]);
         for (var i = 0; i < row_values.length; i++) {
-			worksheet.addRow((row_values[i]));
-		}
-		workbook.xlsx.writeFile('PressureSensor.xlsx');
+		worksheet.addRow((row_values[i]));
+	}
+	workbook.xlsx.writeFile('PressureSensor.xlsx');
         
 
     });
@@ -330,22 +329,25 @@ function calculateEuler(){
 		gamma = 0;
 	} 
 	if(dcm_mode){
-		RT = matrix.multiplyElements(RS, R_cal)
+		RT = matrix.multiply(R_cal, RS)
 		//console.log(alfa + "," + beta + "," + gamma)
 		
 		try{
+			
 			// CERVICAL Inclin + flexExt
-			//alfa = Math.atan2(RT[0][2], RT[0][0]) * 180 / Math.PI;
-			//beta = Math.asin(RT[0][1]) * 180 / Math.PI;
-			//gamma = Math.atan2(-RT[2][1], RT[1][1]) * 180 / Math.PI;
+			alfa = Math.atan2(RT[0][2], RT[0][0]) * 180 / Math.PI;
+			beta = Math.asin(RT[0][1]) * 180 / Math.PI;
+			gamma = Math.atan2(-RT[2][1], RT[1][1]) * 180 / Math.PI;
 			// CONVENIO pronosupinacion + FLEXOEXTENSION
 			//alfa = Math.atan2(-RT[1][2], RT[1][1])*180 / Math.PI;
 			//beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
 			//gamma = 0;
+			
 			// CONVENIO desviacion radial y cubital + FLEXOEXTENSION
-			alfa = Math.asin(-RT[1][0])*180 / Math.PI;
-			beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
-			gamma = 0;
+			//alfa = Math.asin(-RT[1][0])*180 / Math.PI;
+			//beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
+			//gamma = 0;
+			
 					
 		} catch (e){
 			console.log("Alfa, beta, gamma calcs, error: " + e);
