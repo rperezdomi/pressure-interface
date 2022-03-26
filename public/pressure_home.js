@@ -366,13 +366,17 @@ window.onload = function(){
 		let milisegundos = (update_counter/10*1000 - segundos*1000)
 		let minutos = Math.trunc(segundos/60);
 		segundos = segundos - minutos*60; 
+		
+		if(Math.trunc(milisegundos.toString().length < 3)){
+			milisegundos = '0' + milisegundos;
+		}
+		/*if(segundos.toString().length < 2){
+			segundos = '0' + segundos;
+		}
+		*/
 		let label = minutos + '-' + segundos + '-' + milisegundos;
-		if(milisegundos.toString().length == 2){
-			label = minutos + '-' + segundos + '-0' + milisegundos;
-		}		
 		
 		if(is_imu_connected){
-			
 			//Update data value
 			alfa_chart_instance.data.datasets[0].data.push(alfa);
 			beta_chart_instance.data.datasets[0].data.push(beta);
@@ -394,10 +398,11 @@ window.onload = function(){
 				gamma_chart_instance.data.labels.shift();
 			}
 			
+			
 		} else {
-			alfa_chart_instance.data.labels = ['00:00', '10:00'];
-			beta_chart_instance.data.labels = ['00:00', '10:00'];
-			gamma_chart_instance.data.labels = ['00:00', '10:00'];
+			alfa_chart_instance.data.labels = ['00:00', '00:01'];
+			beta_chart_instance.data.labels = ['00:00', '00:01'];
+			gamma_chart_instance.data.labels = ['00:00', '00:01'];
 		}
 		
 		
@@ -417,7 +422,7 @@ window.onload = function(){
 			}
 
 		} else {
-			pressure_chart_instance.data.labels = ['00:00', '10:00'];
+			pressure_chart_instance.data.labels = ['00:00', '00:01'];
 		}
 		
 		update_counter ++
@@ -438,6 +443,10 @@ window.onload = function(){
 			alfa_chart_instance.data.datasets[0].data = [];
 			beta_chart_instance.data.datasets[0].data = [];
 			gamma_chart_instance.data.datasets[0].data = [];
+			alfa_chart_instance.data.labels = [];
+			beta_chart_instance.data.labels = [];
+			gamma_chart_instance.data.labels = [];
+			
 			// show data
 			alfa_chart_instance.data.datasets[0].hidden = false;
 			beta_chart_instance.data.datasets[0].hidden = false;
@@ -445,6 +454,7 @@ window.onload = function(){
 		}
 		if(is_pressure_connected){
 			pressure_chart_instance.data.datasets[0].data = [];
+			pressure_chart_instance.data.labels = [];
 			
 			// show data
 			pressure_chart_instance.data.datasets[0].hidden = false;

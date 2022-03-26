@@ -11,7 +11,7 @@ const matrix = require('node-matrix');
 const BluetoothClassicSerialportClient = require('bluetooth-classic-serialport-client');
 const serial_imu1 = new BluetoothClassicSerialportClient();
 const serial_pressure = new BluetoothClassicSerialportClient();
-const PLOTSAMPLINGTIME = 200; //ms
+const PLOTSAMPLINGTIME = 100; //ms
 const pressureSensorName = "HC-06";
 
 /////////////////////////////////
@@ -304,8 +304,10 @@ io.on('connection', (socket) => {
     	const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('data');
         
-        worksheet.addRow(["Alfa", "Beta", "Gamma", "Sensor Presión"]);
+        worksheet.addRow(["Milisegundos", "Alfa", "Beta", "Gamma", "Sensor Presión"]);
         for (var i = 0; i < row_values.length; i++) {
+		let miliseconds = (i/50)*1000
+		row_values[i].unshift(miliseconds)
 		worksheet.addRow((row_values[i]));
 	}
 	workbook.xlsx.writeFile('PressureSensor.xlsx');
@@ -335,18 +337,18 @@ function calculateEuler(){
 		try{
 			
 			// CERVICAL Inclin + flexExt
-			alfa = Math.atan2(RT[0][2], RT[0][0]) * 180 / Math.PI;
-			beta = Math.asin(RT[0][1]) * 180 / Math.PI;
-			gamma = Math.atan2(-RT[2][1], RT[1][1]) * 180 / Math.PI;
+			//alfa = Math.atan2(RT[0][2], RT[0][0]) * 180 / Math.PI;
+			//beta = Math.asin(RT[0][1]) * 180 / Math.PI;
+			//gamma = Math.atan2(-RT[2][1], RT[1][1]) * 180 / Math.PI;
 			// CONVENIO pronosupinacion + FLEXOEXTENSION
 			//alfa = Math.atan2(-RT[1][2], RT[1][1])*180 / Math.PI;
 			//beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
 			//gamma = 0;
 			
 			// CONVENIO desviacion radial y cubital + FLEXOEXTENSION
-			//alfa = Math.asin(-RT[1][0])*180 / Math.PI;
-			//beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
-			//gamma = 0;
+			alfa = Math.asin(-RT[1][0])*180 / Math.PI;
+			beta = Math.atan2(-RT[2][0], RT[0][0])*180 / Math.PI;
+			gamma = 0;
 			
 					
 		} catch (e){
