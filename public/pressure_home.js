@@ -307,7 +307,7 @@ window.onload = function(){
 				
 				resetGraphs()
 				
-			} else {
+			} else if (status == 1 || status == 2){
 				console.log("error connection / disconnection")
 				hideIMUDatasets();
 				document.getElementById('calibrate').style.display = "none";
@@ -332,8 +332,9 @@ window.onload = function(){
 				document.getElementById("connect_pressure").innerHTML = "Desconectar Sensor de Presion";
 				document.getElementById("connect_pressure").style.background = "#4eb14e";
 				is_pressure_connected = true;
+				resetGraphs();
 				if(is_imu_connected){
-					document.getElementById("record").disable=false;
+					document.getElementById("record").disabled = false;
 				}
 				resetGraphs();
 				
@@ -367,15 +368,20 @@ window.onload = function(){
 		let minutos = Math.trunc(segundos/60);
 		segundos = segundos - minutos*60; 
 		
-		if(Math.trunc(milisegundos.toString().length < 3)){
+		if(Math.trunc(milisegundos).toString().length == 1){
+			milisegundos = '00' + milisegundos;
+		} else if(Math.trunc(milisegundos).toString().length == 2){
 			milisegundos = '0' + milisegundos;
+		} else if(Math.trunc(milisegundos).toString().length == 0){
+			milisegundos = '000';
 		}
+
 		/*if(segundos.toString().length < 2){
 			segundos = '0' + segundos;
 		}
 		*/
 		let label = minutos + '-' + segundos + '-' + milisegundos;
-		
+		console.log(label)
 		if(is_imu_connected){
 			//Update data value
 			alfa_chart_instance.data.datasets[0].data.push(alfa);
