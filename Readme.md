@@ -71,7 +71,7 @@ Open cmd (Simbolo del Sistema in Windows) and type the following. Then, close th
 
 **EXECUTE INTERFACE (EVERY TIME YOU NEED TO OPEN THE INTERFACE)**
 
-**1º - Make sure that both Werium and pressure sensors are paired (via bluetooth) to the computer where the interface is executed. Please, if more than one Werium sensors are paired, unpairtkeep only the one you will need during the sesions.	
+**1º - Make sure that both Werium and pressure sensors are paired (via bluetooth) to the computer where the interface is executed.** Please, if more than one Werium sensors are paired, unpairtkeep only the one you will need during the sesions.	
 			
 **2º - Run interface**: Open cmd and type:
 		
