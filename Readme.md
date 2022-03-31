@@ -57,7 +57,7 @@ We recommend you to follow the instruction in the official documentation web of 
 
 * Download and install **Visual Studio**: You will also have to add the package "Desktop development with C++" during the installation process. Find the Visual Studio downloads oficial web [here](http://visualstudio.microsoft.com/es/downloads).
 
-* Download and install **Python 3** interpreter: Needed for bluetooth used npm package. You can find the file installer [here](https://www.python.org/downloads/release/python-3104/). Scroll down and download the file "windows installer" (32 or 64 bits depending on your computer).
+* Download and install **Python 3** interpreter: Needed for the used bluetooth npm package. You can find the file installer [here](https://www.python.org/downloads/release/python-3104/). Scroll down and download the file "windows installer" (32 or 64 bits depending on your computer).
 
 **2º - Git**: This repository is hosted in github, for this reason you will need to install git in your PC. Please, follow this [link](http://git-scm.com/download/win) to find the installer.
 
