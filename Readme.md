@@ -61,7 +61,7 @@ We recommend you to follow the instruction in the official documentation web of 
 
 **2º - Git**: This repository is hosted in github, for this reason you will need to install git in your PC. Please, follow this [link](http://git-scm.com/download/win) to find the installer.
 
-**3º - Interface documentation**:  Once everything is installed, download all the interface files and rebuild the project. We recommend you to clone this repository via “git clone”. 
+**3º - Interface documentation**:  Once everything is installed, download all the interface files and rebuild the project. We recommend you to download this repository via “git clone”. 
 Open cmd (Simbolo del Sistema in Windows) and type the following. Then, close the cmd.
 
 		git clone "http://www.github.com/rperezdomi/pressure-interface"                      (Download this repository)
@@ -70,17 +70,19 @@ Open cmd (Simbolo del Sistema in Windows) and type the following. Then, close th
 		npm rebuild									     (Rebuild project)
 
 **EXECUTE INTERFACE (EVERY TIME YOU NEED TO OPEN THE INTERFACE)**
-					
-**1º - Run interface**: Open cmd and type:
+
+**1º - Make sure that both Werium and pressure sensors are paired (via bluetooth) to the computer where the interface is executed. Please, if more than one Werium sensors are paired, unpairtkeep only the one you will need during the sesions.	
+			
+**2º - Run interface**: Open cmd and type:
 		
 		cd pressure-interface
 		node index_windows.js
 
 Now, the interface is running in port 3000 at localhost. To access, follow the next step.
 
-**2º - Access interface**: Open Chrome (or other web browser) and type "localhost:3000". Then, press enter.
+**3º - Access interface**: Open Chrome (or other web browser) and type "localhost:3000". Then, press enter.
 
-** Important info to correctly download the excel data file: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
+**Important info to correctly download the excel data file: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
 
 
 
