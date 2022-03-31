@@ -49,28 +49,38 @@ We recommend you to follow the instruction in the official documentation web of 
 
 # Pressure Sensor's Interface Set-Up in Windows
 
+**INSTALLATION (ONLY FIRST TIME)**
+
 **1º - Interface dependencies:**
 
 * Download and install **Nodejs**: You can find the corresponding file in this [link](http://nodejs.org).
 
 * Download and install **Visual Studio**: You will also have to add the package "Desktop development with C++" during the installation process. Find the Visual Studio downloads oficial web [here](http://visualstudio.microsoft.com/es/downloads).
 
+* Download and install **Python 3** interpreter: Needed for bluetooth used npm package. You can find the file installer [here](https://www.python.org/downloads/release/python-3104/). Scroll down and download the file "windows installer" (32 or 64 bits depending on your computer).
+
 **2º - Git**: This repository is hosted in github, for this reason you will need to install git in your PC. Please, follow this [link](http://git-scm.com/download/win) to find the installer.
 
 **3º - Interface documentation**:  Once everything is installed, download all the interface files and rebuild the project. We recommend you to clone this repository via “git clone”. 
-Open cmd and type the following:
+Open cmd (Simbolo del Sistema in Windows) and type the following. Then, close the cmd.
 
-		$ git clone "http://www.github.com/rperezdomi/pressure-interface"
-		$ cd pressure-interface
-		$ npm install
-		$ npm rebuild
-		
-**4º - Run interface**: In /your_path/pressure-interface type:
-		
-		$ node index_windows.js
-		
+		git clone "http://www.github.com/rperezdomi/pressure-interface"                      (Download this repository)
+		cd pressure-interface							             (Access pressure-interface folder)	
+		npm install									     (Install Nodejs Package Manager (npm) module from Nodejs)
+		npm rebuild									     (Rebuild project)
 
-** Important: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
+**EXECUTE INTERFACE (EVERY TIME YOU NEED TO OPEN THE INTERFACE)**
+					
+**1º - Run interface**: Open cmd and type:
+		
+		cd pressure-interface
+		node index_windows.js
+
+Now, the interface is running in port 3000 at localhost. To access, follow the next step.
+
+**2º - Access interface**: Open Chrome (or other web browser) and type "localhost:3000". Then, press enter.
+
+** Important info to correctly download the excel data file: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
 
 
 
