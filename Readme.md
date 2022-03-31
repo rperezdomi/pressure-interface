@@ -82,7 +82,7 @@ Now, the interface is running in port 3000 at localhost. To access, follow the n
 
 **3º - Access interface**: Open Chrome (or other web browser) and type "localhost:3000". Then, press enter.
 
-**Important info to correctly download the excel data file: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
+**Important info to correctly download the excel data file: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.**
 
 
 
