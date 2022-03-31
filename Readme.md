@@ -1,4 +1,4 @@
-# Pressure Sensor's Interface Set-Up
+# Pressure Sensor's Interface Set-Up in Raspberry PI
 
 For its setting up a Raspberry Pi is needed, together with a SD card. In our case, the interface has been developed using a Raspberry Pi 4 Model B and a SD card of 32 GB.
 
@@ -6,11 +6,11 @@ For its setting up a Raspberry Pi is needed, together with a SD card. In our cas
 We recommend you to follow the instruction in the official documentation web of raspberry image OS installation.
 
 **2º - Interface dependencies:** Once Debian 10 is installed in the raspberry, connect it to the internet and download this repository. Then, in the corresponding path, download the following dependencies:
-*	Ensure that everything is **up to date**
+* Ensure that everything is **up to date**
 		
 		$ sudo apt update
 		$ sudo apt-get dist-update
-*	Install **NodeJs** and its package manager (**npm**):
+* Install **NodeJs** and its package manager (**npm**):
 		
 		$ sudo apt install nodejs npm
 * Install **Server**:
@@ -45,4 +45,33 @@ We recommend you to follow the instruction in the official documentation web of 
 		IV.	[Bluetooth]# pair 99:99:99:99:99:99   (Sensor´s MAC address)
 		V.	[Bluetooth]# trust 99:99:99:99:99:99  (Sensor’s MAC address)
 		Steps IV and V must be introduced while scan is on. Please, repeat this two steps for each sensor you will use.
+
+
+# Pressure Sensor's Interface Set-Up in Windows
+
+**1º - Interface dependencies:**
+
+* Download and install **Nodejs**: You can find the corresponding file in this [link](http://nodejs.org).
+
+* Download and install **Visual Studio**: You will also have to add the package "Desktop development with C++" during the installation process. Find the Visual Studio downloads oficial web [here](http://visualstudio.microsoft.com/es/downloads).
+
+**2º - Git**: This repository is hosted in github, for this reason you will need to install git in your PC. Please, follow this [link](http://git-scm.com/download/win) to find the installer.
+
+**3º - Interface documentation**:  Once everything is installed, download all the interface files and rebuild the project. We recommend you to clone this repository via “git clone”. 
+Open cmd and type the following:
+
+		$ git clone "http://www.github.com/rperezdomi/pressure-interface"
+		$ cd pressure-interface
+		$ npm install
+		$ npm rebuild
+		
+**4º - Run interface**: In /your_path/pressure-interface type:
+		
+		$ node index_windows.js
+		
+
+** Important: When pressing "download" button, a new window will appear. Please, change from "192.168.43.1:3000/..." to "localhost:3000/..." to start the file download.
+
+
+
 
