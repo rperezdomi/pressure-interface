@@ -263,7 +263,7 @@ io.on('connection', (socket) => {
 
     });
     // Disconnect Pressure Sensor
-    socket.on('pressure:disconnect_imu1', function(callbackFn) {
+    socket.on('pressure:disconnect_pressure', function(callbackFn) {
 
        disconnect_bt_device(socket, serial_pressure, is_pressure_connected, "pressure");
 
