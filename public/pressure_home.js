@@ -8,22 +8,37 @@ var is_imu_connected = false;
 var is_pressure_connected = false;
 var update_counter = 0;
 
-	
+const annotation1 = {
+  type: 'line',
+  borderColor: 'black',
+  borderWidth: 5,
+  click: function({chart, element}) {
+    console.log('Line annotation clicked');
+  },
+  label: {
+    backgroundColor: 'red',
+    content: 'Test Label',
+    enabled: true
+  },
+  scaleID: 'y',
+  value: 15
+};
+
 window.onload = function(){ 
 	
 	//*********************************//
 	//** CHARTS CONFIGURATION  **//
 	//*********************************//
-	var ctxalfa = document.getElementById('alfa_chart').getContext('2d');
+	//var ctxalfa = document.getElementById('alfa_chart').getContext('2d');
 	var ctxbeta = document.getElementById('beta_chart').getContext('2d');
-	var ctxgamma = document.getElementById('gamma_chart').getContext('2d');
+	//var ctxgamma = document.getElementById('gamma_chart').getContext('2d');
 	var ctxpressure = document.getElementById('pressure_chart').getContext('2d');
 
 	// charts sizes:
-	ctxalfa.canvas.height = 340;
+	//ctxalfa.canvas.height = 340;
 	ctxbeta.canvas.height = 340;
-	ctxgamma.canvas.height = 340;
-	ctxpressure.canvas.height = 340;
+	//ctxgamma.canvas.height = 340;
+	ctxpressure.canvas.height = 500;
 
 	var commonOptions = {
 		font: {
@@ -57,16 +72,15 @@ window.onload = function(){
 			yAxes: [{
 				ticks: {
                     //display: false,
-					max: 100,    // maximum will be 70, unless there is a lower value.
+					max: 40,    // maximum will be 70, unless there is a lower value.
 					min: 0    // minimum will be -10, unless there is a lower value.  
 				},
 				scaleLabel: {
 					display: true,
-					labelString: 'Grados (º)'
+					labelString: 'mm Hg'
 				}
 			}]
 		},
-		
 		maintainAspectRatio: false,
 		//showLines: false, // disable for a single dataset
 		animation: {
@@ -138,7 +152,7 @@ window.onload = function(){
 		}
 	};
 	
-	var alfa_chart_instance = new Chart(ctxalfa, {
+	/*var alfa_chart_instance = new Chart(ctxalfa, {
 		type: 'line',
 		data: {
 			datasets: [{label: 'alfa',
@@ -152,7 +166,7 @@ window.onload = function(){
 			}]
 		},
 		options: Object.assign({}, commonOptions_IMU)		
-	});
+	});*/
 	var beta_chart_instance = new Chart(ctxbeta, {
 		type: 'line',
 		data: {
@@ -168,7 +182,7 @@ window.onload = function(){
 		},
 		options: Object.assign({}, commonOptions_IMU)		
 	});
-	var gamma_chart_instance = new Chart(ctxgamma, {
+	/*var gamma_chart_instance = new Chart(ctxgamma, {
 		type: 'line',
 		data: {
 			datasets: [{label: 'gamma',
@@ -182,7 +196,7 @@ window.onload = function(){
 			}]
 		},
 		options: Object.assign({}, commonOptions_IMU)		
-	});
+	});*/
 	var pressure_chart_instance = new Chart(ctxpressure, {
 		type: 'line',
 		data: {
@@ -191,7 +205,71 @@ window.onload = function(){
 				fill: false,
 				hidden: true,
 				borderColor: '#FF2626',
-				borderWidth: 1.5,
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '18 mmHg',
+				data: [18],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '20 mmHg',
+				data: [20],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '22 mmHg',
+				data: [22],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '24 mmHg',
+				data: [24],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '26 mmHg',
+				data: [26],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '28 mmHg',
+				data: [28],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '30 mmHg',
+				data: [30],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
+				pointBorderWidth: [],
+				pointStyle: 'line'
+			},{label: '32 mmHg',
+				data: [32],
+				fill: false,
+				hidden: true,
+				borderColor: '#4e73df',
+				borderWidth: 1,
 				pointBorderWidth: [],
 				pointStyle: 'line'
 			}]
@@ -384,45 +462,60 @@ window.onload = function(){
 		console.log(label)
 		if(is_imu_connected){
 			//Update data value
-			alfa_chart_instance.data.datasets[0].data.push(alfa);
+			//alfa_chart_instance.data.datasets[0].data.push(alfa);
 			beta_chart_instance.data.datasets[0].data.push(beta);
-			gamma_chart_instance.data.datasets[0].data.push(gamma);
+			//gamma_chart_instance.data.datasets[0].data.push(gamma);
 			
-			alfa_chart_instance.data.labels.push(label);
+			//alfa_chart_instance.data.labels.push(label);
 			beta_chart_instance.data.labels.push(label);
-			gamma_chart_instance.data.labels.push(label);
+			//gamma_chart_instance.data.labels.push(label);
 			
 			if(update_counter > 49){
 				// Remove first data value  in array
-				alfa_chart_instance.data.datasets[0].data.shift()
+				//alfa_chart_instance.data.datasets[0].data.shift()
 				beta_chart_instance.data.datasets[0].data.shift();
-				gamma_chart_instance.data.datasets[0].data.shift();
+				//gamma_chart_instance.data.datasets[0].data.shift();
 				
 				// Remove first data label in array
-				alfa_chart_instance.data.labels.shift()
+				//alfa_chart_instance.data.labels.shift()
 				beta_chart_instance.data.labels.shift();
-				gamma_chart_instance.data.labels.shift();
+				//gamma_chart_instance.data.labels.shift();
 			}
 			
 			
 		} else {
-			alfa_chart_instance.data.labels = ['00:00', '00:01'];
+			//alfa_chart_instance.data.labels = ['00:00', '00:01'];
 			beta_chart_instance.data.labels = ['00:00', '00:01'];
-			gamma_chart_instance.data.labels = ['00:00', '00:01'];
+			//gamma_chart_instance.data.labels = ['00:00', '00:01'];
 		}
-		
 		
 		if(is_pressure_connected){
 			// Add data value in dataset list
 			pressure_chart_instance.data.datasets[0].data.push(pressure);
-			
+			pressure_chart_instance.data.datasets[1].data.push(18);
+			pressure_chart_instance.data.datasets[2].data.push(20);
+			pressure_chart_instance.data.datasets[3].data.push(22);
+			pressure_chart_instance.data.datasets[4].data.push(24);
+			pressure_chart_instance.data.datasets[5].data.push(26);
+			pressure_chart_instance.data.datasets[6].data.push(28);
+			pressure_chart_instance.data.datasets[7].data.push(30);
+			pressure_chart_instance.data.datasets[8].data.push(32);
+
 			// Add label to chart
 			pressure_chart_instance.data.labels.push(label);
 			
 			if(update_counter > 49){
 				// Remove first data valuein dataset list
 				pressure_chart_instance.data.datasets[0].data.shift();
-			
+				pressure_chart_instance.data.datasets[1].data.shift();
+				pressure_chart_instance.data.datasets[2].data.shift();
+				pressure_chart_instance.data.datasets[3].data.shift();
+				pressure_chart_instance.data.datasets[4].data.shift();
+				pressure_chart_instance.data.datasets[5].data.shift();
+				pressure_chart_instance.data.datasets[6].data.shift();
+				pressure_chart_instance.data.datasets[7].data.shift();
+				pressure_chart_instance.data.datasets[8].data.shift();
+
 				//Remove first data lael in list
 				pressure_chart_instance.data.labels.shift();
 			}
@@ -433,9 +526,9 @@ window.onload = function(){
 		
 		update_counter ++
 		
-		alfa_chart_instance.update();
+		//alfa_chart_instance.update();
 		beta_chart_instance.update();
-		gamma_chart_instance.update();
+		//gamma_chart_instance.update();
 		pressure_chart_instance.update();
 		
 		
@@ -446,35 +539,65 @@ window.onload = function(){
 		update_counter = 0;
 		
 		if(is_imu_connected){
-			alfa_chart_instance.data.datasets[0].data = [];
+			//alfa_chart_instance.data.datasets[0].data = [];
 			beta_chart_instance.data.datasets[0].data = [];
-			gamma_chart_instance.data.datasets[0].data = [];
-			alfa_chart_instance.data.labels = [];
+			//gamma_chart_instance.data.datasets[0].data = [];
+			//alfa_chart_instance.data.labels = [];
 			beta_chart_instance.data.labels = [];
-			gamma_chart_instance.data.labels = [];
+			//gamma_chart_instance.data.labels = [];
 			
 			// show data
-			alfa_chart_instance.data.datasets[0].hidden = false;
+			//alfa_chart_instance.data.datasets[0].hidden = false;
 			beta_chart_instance.data.datasets[0].hidden = false;
-			gamma_chart_instance.data.datasets[0].hidden = false;
+			//gamma_chart_instance.data.datasets[0].hidden = false;
 		}
 		if(is_pressure_connected){
 			pressure_chart_instance.data.datasets[0].data = [];
+			pressure_chart_instance.data.datasets[1].data = [];
+			pressure_chart_instance.data.datasets[2].data = [];
+			pressure_chart_instance.data.datasets[3].data = [];
+			pressure_chart_instance.data.datasets[4].data = [];
+			pressure_chart_instance.data.datasets[5].data = [];
+			pressure_chart_instance.data.datasets[6].data = [];
+			pressure_chart_instance.data.datasets[7].data = [];
+			pressure_chart_instance.data.datasets[8].data = [];
+
 			pressure_chart_instance.data.labels = [];
 			
 			// show data
 			pressure_chart_instance.data.datasets[0].hidden = false;
+			/*
+			pressure_chart_instance.data.datasets[1].hidden = false;
+			pressure_chart_instance.data.datasets[2].hidden = false;
+			pressure_chart_instance.data.datasets[3].hidden = false;
+			pressure_chart_instance.data.datasets[4].hidden = false;
+			pressure_chart_instance.data.datasets[5].hidden = false;
+			pressure_chart_instance.data.datasets[6].hidden = false;
+			pressure_chart_instance.data.datasets[7].hidden = false;
+			pressure_chart_instance.data.datasets[8].hidden = false;
+			*/
 		}
 	}
 	
 	function hideIMUDatasets(){
-		alfa_chart_instance.data.datasets[0].hidden = true;
+		//alfa_chart_instance.data.datasets[0].hidden = true;
 		beta_chart_instance.data.datasets[0].hidden = true;
-		gamma_chart_instance.data.datasets[0].hidden = true;
+		//gamma_chart_instance.data.datasets[0].hidden = true;
 	}
 	
 	function hidePressureDatasets(){
 		pressure_chart_instance.data.datasets[0].hidden = false;
+		/*
+		pressure_chart_instance.data.datasets[1].hidden = false;
+		pressure_chart_instance.data.datasets[2].hidden = false;
+		pressure_chart_instance.data.datasets[3].hidden = false;
+		pressure_chart_instance.data.datasets[4].hidden = false;
+		pressure_chart_instance.data.datasets[5].hidden = false;
+		pressure_chart_instance.data.datasets[6].hidden = false;
+		pressure_chart_instance.data.datasets[7].hidden = false;
+		pressure_chart_instance.data.datasets[8].hidden = false;
+		*/
+
 	}
 	
 }
