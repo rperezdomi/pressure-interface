@@ -38,7 +38,7 @@ window.onload = function(){
 	//ctxalfa.canvas.height = 340;
 	ctxbeta.canvas.height = 340;
 	//ctxgamma.canvas.height = 340;
-	ctxpressure.canvas.height = 500;
+	ctxpressure.canvas.height = 900;
 
 	var commonOptions = {
 		font: {
@@ -344,7 +344,7 @@ window.onload = function(){
 	document.getElementById("save").onclick = function() {
 		socket.emit('pressure:download');
 		document.getElementById("save").disabled = true;
-		window.open('http://192.168.43.1:3000/downloadpressuresensor');
+		window.open('http://localhost:3000/downloadpressuresensor');
 		
 	}
 	document.getElementById("calibrate").onclick = function() {
@@ -459,7 +459,7 @@ window.onload = function(){
 		}
 		*/
 		let label = minutos + '-' + segundos + '-' + milisegundos;
-		console.log(label)
+		//console.log(label)
 		if(is_imu_connected){
 			//Update data value
 			//alfa_chart_instance.data.datasets[0].data.push(alfa);

@@ -192,7 +192,7 @@ serial_pressure.on('data', function(data){
 						row_values.push([alfa, beta, gamma, pressure_value])			
 					}
 				}
-				console.log(data_vector[1])
+				//console.log(data_vector[1])
 			} else {
 				lasthex_pressure = '#' + msg_list_pressure[i]
 			}
