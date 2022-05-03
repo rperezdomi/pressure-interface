@@ -13,7 +13,9 @@ const serial_imu1 = new BluetoothClassicSerialportClient();
 const serial_pressure = new BluetoothClassicSerialportClient();
 const PLOTSAMPLINGTIME = 100; //ms
 const pressureSensorName = "HC-06";
-const IMUSensorName = "20220015"
+const IMUSensorName1 = "20200015-PM";
+const IMUSensorName2 = "20190003-PM";
+
 
 /////////////////////////////////
 //** Webserver configuration **//
@@ -415,7 +417,10 @@ function connect_bt_device(socket, bt_object, status_boolean, str_device){
 					// case sensors ProMotion 
 					}else {
 						if (device_name.substr(device_name.length -3) == "-PM"){
-							if(device_name.substr(device_name.length) == IMUSensorName){
+							
+							if(device_name == IMUSensorName1 | device_name == IMUSensorName2){
+								console.log(device_name)
+								console.log(IMUSensorName1)
 								if(!connected_PMSensors_addresses.includes(device_address)){
 									deviceNotFound = false;
 									connected_PMSensors_addresses.push(str_device);
