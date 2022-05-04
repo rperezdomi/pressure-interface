@@ -385,7 +385,7 @@ window.onload = function(){
 				
 				resetGraphs()
 				
-			} else if (status == 1 || status == 2){
+			} else {
 				console.log("error connection / disconnection")
 				hideIMUDatasets();
 				document.getElementById('calibrate').style.display = "none";
@@ -416,7 +416,7 @@ window.onload = function(){
 				}
 				resetGraphs();
 				
-			} else if (status == 1 || status == 2){
+			} else {
 				console.log("error connection")
 				//change button color and text;
 				document.getElementById("connect_pressure").value = "off";

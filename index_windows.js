@@ -117,34 +117,34 @@ serial_imu1.on('data', function(data){
 	// The imu streamming mode is already in DCM
 	} else{
 		try{
-		// get the entire message from the received data ('#DCM= arg1, arg2...., arg10')
-		 ascii_msg_imu1 = hex2a_general(data, lasthex_imu1, is_first_data[1]);
-		 let msg_list = ascii_msg_imu1[0];
-		 is_first_data[1] = ascii_msg_imu1[1];
-		 
-		 for(i=0; i<msg_list.length; i++){
-			if(msg_list[i].includes("=") & msg_list[i].includes(',')){
-				dcm_data_vector = msg_list[i].split('=')[1].split(',');				
-				if(dcm_data_vector.length == 10){
-					lasthex_imu1 = "";
-					
-					RS = matrix([[parseFloat(dcm_data_vector[0]), parseFloat(dcm_data_vector[1]), parseFloat(dcm_data_vector[2])],
-					           [parseFloat(dcm_data_vector[3]), parseFloat(dcm_data_vector[4]), parseFloat(dcm_data_vector[5])],
-					           [parseFloat(dcm_data_vector[6]), parseFloat(dcm_data_vector[7]), parseFloat(dcm_data_vector[8])]
-					           ]);
-					
-					calculateEuler();
-					//console.log(alfa, ',', beta)
-					//console.log('#DCM=' + dcm_data_vector)
+			// get the entire message from the received data ('#DCM= arg1, arg2...., arg10')
+			 ascii_msg_imu1 = hex2a_general(data, lasthex_imu1, is_first_data[1]);
+			 let msg_list = ascii_msg_imu1[0];
+			 is_first_data[1] = ascii_msg_imu1[1];
+			 
+			 for(i=0; i<msg_list.length; i++){
+				if(msg_list[i].includes("=") & msg_list[i].includes(',')){
+					dcm_data_vector = msg_list[i].split('=')[1].split(',');				
+					if(dcm_data_vector.length == 10){
+						lasthex_imu1 = "";
+						
+						RS = matrix([[parseFloat(dcm_data_vector[0]), parseFloat(dcm_data_vector[1]), parseFloat(dcm_data_vector[2])],
+						           [parseFloat(dcm_data_vector[3]), parseFloat(dcm_data_vector[4]), parseFloat(dcm_data_vector[5])],
+						           [parseFloat(dcm_data_vector[6]), parseFloat(dcm_data_vector[7]), parseFloat(dcm_data_vector[8])]
+						           ]);
+						
+						calculateEuler();
+						//console.log(alfa, ',', beta)
+						//console.log('#DCM=' + dcm_data_vector)
 
+					} else {
+						lasthex_imu1 = '#' + msg_list[i]
+					}
 				} else {
 					lasthex_imu1 = '#' + msg_list[i]
 				}
-			} else {
-				lasthex_imu1 = '#' + msg_list[i]
+					
 			}
-				
-		}
 		}catch(error){
 			console.log(error);
 		}
@@ -152,26 +152,32 @@ serial_imu1.on('data', function(data){
 
 }); 
 
-serial_imu1.on('closed', function(){
-	console.log("connection closed");
+serial_imu1.on('closed', function(e){
+	console.log("imu sensor error closed")
 	
 	sockets['websocket'].emit('pressure:connection_status',{
 		 device: "imu1",
 		 status:3
 	}) 
 	
-	disconnect_bt_device(sockets['websocket'], serial_imu1, is_imu1_connected, "imu1")
-
 })
 
 serial_imu1.on('failure', function(e){
 	console.log(e);
-
+	console.log("imu sensor error failrure")
+	sockets['websocket'].emit('pressure:connection_status',{
+		 device: "imu1",
+		 status:3
+	}) 
 })
 
 serial_imu1.on('disconnected', function(e){
 	console.log(e);
-
+	console.log("imu sensor error disconnected")
+	sockets['websocket'].emit('pressure:connection_status',{
+		 device: "imu1",
+		 status:3
+	}) 
 })
 
 
@@ -206,7 +212,7 @@ serial_pressure.on('data', function(data){
 }); 
 serial_pressure.on('closed', function(){
 	
-	console.log("connection with pressure closed");
+	console.log("pressure sensor error closed")
 	
 	sockets['websocket'].emit('pressure:connection_status',{
 		 device: "pressure",
@@ -215,7 +221,21 @@ serial_pressure.on('closed', function(){
 	
 	disconnect_bt_device(sockets['websocket'], serial_pressure, is_pressure_connected, "pressure")
 })
+serial_pressure.on('failure', function(e){
+	console.log("pressure sensor error failed")
+	sockets['websocket'].emit('pressure:connection_status',{
+		 device: "pressure",
+		 status:3
+	})
+})
 
+serial_pressure.on('disconnected', function(e){
+	console.log("pressure sensor error disconnected")
+	sockets['websocket'].emit('pressure:connection_status',{
+		 device: "pressure",
+		 status:3
+	})
+})
 
 // Websockets
 io.on('connection', (socket) => {
@@ -245,7 +265,7 @@ io.on('connection', (socket) => {
     // Connect IMU 
     socket.on('pressure:connect_imu1', function(callbackFn) {
 	    
-	console.log(is_imu1_connected);
+		console.log(is_imu1_connected);
         connect_bt_device(socket, serial_imu1, is_imu1_connected, "imu1");
 
     });
@@ -256,7 +276,13 @@ io.on('connection', (socket) => {
         imu1_pitch_vector = []
         imu1_roll_vector = []
 
-       disconnect_bt_device(socket, serial_imu1, is_imu1_connected, "imu1");
+        try {
+			disconnect_bt_device(socket, serial_imu1, is_imu1_connected, "imu1");
+		} catch(e){
+			console.log("the imu connection is already disconnected")
+			is_imu1_connected = false;
+		}
+       
        
     });
     // Connect Pressure Sensor
@@ -269,7 +295,13 @@ io.on('connection', (socket) => {
     // Disconnect Pressure Sensor
     socket.on('pressure:disconnect_pressure', function(callbackFn) {
 
-       disconnect_bt_device(socket, serial_pressure, is_pressure_connected, "pressure");
+    	try {
+			disconnect_bt_device(socket, serial_pressure, is_pressure_connected, "pressure");
+		} catch(e){
+			console.log("the connection with the pressure sensor is already disconnected")
+			is_pressure_connected = false;
+		}
+       
 
        
     });
@@ -420,7 +452,6 @@ function connect_bt_device(socket, bt_object, status_boolean, str_device){
 							
 							if(device_name == IMUSensorName1 | device_name == IMUSensorName2){
 								console.log(device_name)
-								console.log(IMUSensorName1)
 								if(!connected_PMSensors_addresses.includes(device_address)){
 									deviceNotFound = false;
 									connected_PMSensors_addresses.push(str_device);
