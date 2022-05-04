@@ -383,7 +383,7 @@ window.onload = function(){
 					document.getElementById("record").disabled = false;
 				}
 				
-				resetGraphs()
+				
 				
 			} else {
 				console.log("error connection / disconnection")
@@ -586,7 +586,7 @@ window.onload = function(){
 	}
 	
 	function hidePressureDatasets(){
-		pressure_chart_instance.data.datasets[0].hidden = false;
+		pressure_chart_instance.data.datasets[0].hidden = true;
 		/*
 		pressure_chart_instance.data.datasets[1].hidden = false;
 		pressure_chart_instance.data.datasets[2].hidden = false;
