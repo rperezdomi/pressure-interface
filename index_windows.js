@@ -15,6 +15,11 @@ const PLOTSAMPLINGTIME = 100; //ms
 const pressureSensorName = "HC-06";
 const IMUSensorName1 = "20200015-PM";
 const IMUSensorName2 = "20190003-PM";
+const IMUtesterName = "20220015-PM";
+
+var msecondsFromLastMessage = 0;
+var msecondsFromLastMessage_pressure = 0;
+
 
 
 /////////////////////////////////
@@ -94,6 +99,7 @@ var dcm_mode = false;
 
 // IMU1 data reception (bt)
 serial_imu1.on('data', function(data){ 
+	msecondsFromLastMessage = 0;
 	// Check imu mode (DCM or ANGLES)
 	if (data.toString().includes("#")){
 		let key = data.toString().split('#')[1].substr(0,3)
@@ -171,9 +177,8 @@ serial_imu1.on('failure', function(e){
 	}) 
 })
 
-serial_imu1.on('disconnected', function(e){
-	console.log(e);
-	console.log("imu sensor error disconnected")
+serial_imu1.on('disconnected', function(){
+	console.log("imu sensor was disconnected")
 	sockets['websocket'].emit('pressure:connection_status',{
 		 device: "imu1",
 		 status:3
@@ -189,6 +194,7 @@ serial_pressure.on('data', function(data){
 	 let msg_list_pressure = ascii_msg_pressure[0];
 	 is_first_data[2] = ascii_msg_pressure[1];
 	 
+	 msecondsFromLastMessage_pressure = 0;
 	 
 	 for(i=0; i < msg_list_pressure.length; i++){
 		if(msg_list_pressure[i].includes("=") & msg_list_pressure[i].includes(",")){
@@ -258,6 +264,22 @@ io.on('connection', (socket) => {
             pressure: pressure_value,
             
         })
+        // check if imu sensor is still connected
+        if(is_imu1_connected){
+	        msecondsFromLastMessage += 100
+	        if(msecondsFromLastMessage >= 3000){
+	        	disconnect_bt_device(socket, serial_imu1, is_imu1_connected, "imu1");
+	        	msecondsFromLastMessage = 0
+	        }
+	    }
+	    // check if pressure sensor is still connected
+	    if(is_pressure_connected){
+	        msecondsFromLastMessage_pressure += 100
+	        if(msecondsFromLastMessage_pressure >= 3000){
+			disconnect_bt_device(socket, serial_pressure, is_pressure_connected, "pressure");
+	        	msecondsFromLastMessage_pressure = 0
+	        }
+	    }
 
     }, PLOTSAMPLINGTIME);
 
@@ -450,7 +472,7 @@ function connect_bt_device(socket, bt_object, status_boolean, str_device){
 					}else {
 						if (device_name.substr(device_name.length -3) == "-PM"){
 							
-							if(device_name == IMUSensorName1 | device_name == IMUSensorName2){
+							if(device_name == IMUtesterName){
 								console.log(device_name)
 								if(!connected_PMSensors_addresses.includes(device_address)){
 									deviceNotFound = false;
