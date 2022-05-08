@@ -127,8 +127,8 @@ window.onload = function(){
 			yAxes: [{
 				ticks: {
                     //display: false,
-					max: 50,    // maximum will be 70, unless there is a lower value.
-					min: -50    // minimum will be -10, unless there is a lower value.  
+					max: 5,    // maximum will be 70, unless there is a lower value.
+					min: -20    // minimum will be -10, unless there is a lower value.  
 				},
 				scaleLabel: {
 					display: true,
