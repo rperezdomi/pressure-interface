@@ -362,7 +362,7 @@ io.on('connection', (socket) => {
     	const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('data');
         
-        worksheet.addRow(["mSec", "Alfa", "Beta", "Gamma", "Presión"]);
+        worksheet.addRow(["timestamp", "Alfa", "Beta", "Gamma", "Presión"]);
         for (var i = 0; i < row_values.length; i++) {
         	let miliseconds = (i/50)*1000
         	row_values[i].unshift(miliseconds)
